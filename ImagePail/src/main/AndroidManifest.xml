@@ -22,6 +22,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="edu.gatech.cs4261.wheresdabeef.Single_image"
+            android:label="@string/title_activity_single_image"
+            android:parentActivityName="edu.gatech.cs4261.wheresdabeef.Home_feed" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.gatech.cs4261.wheresdabeef.Home_feed" />
+            >
+        </activity>
+        <activity
+            android:name="edu.gatech.cs4261.wheresdabeef.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
     </application>
 
 </manifest>

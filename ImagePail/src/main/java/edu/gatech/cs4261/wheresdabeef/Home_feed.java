@@ -1,6 +1,7 @@
 package edu.gatech.cs4261.wheresdabeef;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 public class Home_feed extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -104,10 +104,18 @@ public class Home_feed extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
+                openSettings();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void openSettings() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+
 
     /**
      * A placeholder fragment containing a simple view.
@@ -141,11 +149,14 @@ public class Home_feed extends ActionBarActivity
             View rootView = inflater.inflate(R.layout.picture_grid_main, container, false);
 
             GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
-            gridview.setAdapter(new ImageAdapter(getActivity(),section));
+            final ImageAdapter imageAdapter = new ImageAdapter(getActivity(),section, true);
+            gridview.setAdapter(imageAdapter);
 
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                    Toast.makeText(getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), Single_image.class);
+                    intent.putExtra("image", imageAdapter.getImageId(position));
+                    startActivity(intent);
                 }
             });
             return rootView;

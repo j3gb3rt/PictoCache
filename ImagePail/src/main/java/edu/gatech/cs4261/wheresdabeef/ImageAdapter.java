@@ -18,61 +18,67 @@ import java.util.ArrayList;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Integer> images;
-    public ImageAdapter(Context c, int i) {
+    public ImageAdapter(Context c, int i, boolean grid) {
         mContext = c;
         images = new ArrayList<Integer>();
-        switch (i)
-        {
-            case 1:
-                images.add(0);
-                images.add(1);
-                images.add(2);
-                images.add(3);
-                images.add(4);
-                images.add(5);
-                break;
-            case 2:
-                images.add(6);
-                images.add(7);
-                images.add(8);
-                images.add(9);
-                images.add(10);
-                images.add(11);
-                break;
-            case 3:
-                images.add(1);
-                images.add(3);
-                images.add(5);
-                images.add(7);
-                images.add(9);
-                images.add(11);
-                break;
-            case 4:
-                images.add(0);
-                images.add(2);
-                images.add(4);
-                images.add(6);
-                images.add(8);
-                images.add(10);
-                break;
-            case 5:
-                images.add(6);
-                images.add(0);
-                images.add(7);
-                images.add(1);
-                images.add(8);
-                images.add(2);
-                break;
-            case 6:
-                images.add(3);
-                images.add(9);
-                images.add(4);
-                images.add(10);
-                images.add(5);
-                images.add(11);
-                break;
-            default:
-                images.add(1);
+        if (grid) {
+            switch (i)
+            {
+                case 1:
+                    images.add(0);
+                    images.add(1);
+                    images.add(2);
+                    images.add(3);
+                    images.add(4);
+                    images.add(5);
+                    break;
+                case 2:
+                    images.add(6);
+                    images.add(7);
+                    images.add(8);
+                    images.add(9);
+                    images.add(10);
+                    images.add(11);
+                    break;
+                case 3:
+                    images.add(1);
+                    images.add(3);
+                    images.add(5);
+                    images.add(7);
+                    images.add(9);
+                    images.add(11);
+                    break;
+                case 4:
+                    images.add(0);
+                    images.add(2);
+                    images.add(4);
+                    images.add(6);
+                    images.add(8);
+                    images.add(10);
+                    break;
+                case 5:
+                    images.add(6);
+                    images.add(0);
+                    images.add(7);
+                    images.add(1);
+                    images.add(8);
+                    images.add(2);
+                    break;
+                case 6:
+                    images.add(3);
+                    images.add(9);
+                    images.add(4);
+                    images.add(10);
+                    images.add(5);
+                    images.add(11);
+                    break;
+                default:
+                    images.add(1);
+            }
+        }
+        else{
+            if (i < 12)
+            images.add(i);
         }
         //for(int i = 0; i < rand; i++)
         //{
@@ -82,6 +88,10 @@ public class ImageAdapter extends BaseAdapter {
 
     public int getCount() {
         return images.size();
+    }
+
+    public int getImageId(int position) {
+        return mThumbIds[images.get(position)];
     }
 
     public Object getItem(int position) {

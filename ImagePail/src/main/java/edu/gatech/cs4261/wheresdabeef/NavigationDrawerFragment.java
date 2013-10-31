@@ -18,9 +18,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 ;
 
@@ -54,6 +58,7 @@ public class NavigationDrawerFragment extends Fragment {
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
+    private SectionedListAdapter adapter;
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
@@ -95,18 +100,15 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                        getString(R.string.title_section4),
-                        getString(R.string.title_section5),
-                        getString(R.string.title_section6),
-                }));
+        adapter = new SectionedListAdapter();
+        adapter.addSeparatorItem("Featured");
+        adapter.addItem("Nearby");
+        adapter.addItem("New");
+        adapter.addItem("Popular");
+        adapter.addSectionSpace();
+        adapter.addSeparatorItem("Subscribed Tags");
+
+        mDrawerListView.setAdapter(adapter);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
@@ -281,4 +283,91 @@ public class NavigationDrawerFragment extends Fragment {
          */
         void onNavigationDrawerItemSelected(int position);
     }
+
+    private class SectionedListAdapter extends BaseAdapter {
+
+        private static final int TYPE_ITEM = 0;
+        private static final int TYPE_SPACE = 1;
+        private static final int TYPE_SEPARATOR = 2;
+        private static final int TYPE_MAX_COUNT = TYPE_SEPARATOR + 1;
+
+        private ArrayList<String> mData = new ArrayList<String>();
+        private LayoutInflater mInflater;
+
+        private ArrayList<Integer> mTypes = new ArrayList<Integer>();
+
+        public SectionedListAdapter() {
+            mInflater = getActivity().getLayoutInflater();
+        }
+
+        public void addItem(final String item) {
+            mData.add(item);
+            mTypes.add(TYPE_ITEM);
+            notifyDataSetChanged();
+        }
+
+        public void addSeparatorItem(final String item) {
+            mData.add(item);
+            mTypes.add(TYPE_SEPARATOR);
+            notifyDataSetChanged();
+        }
+
+        public void addSectionSpace() {
+            mData.add("");
+            mTypes.add(TYPE_SPACE);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return mTypes.get(position);
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return TYPE_MAX_COUNT;
+        }
+
+        public int getCount() {
+            return mData.size();
+        }
+
+        public String getItem(int position) {
+            return mData.get(position);
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View linearLayout;
+            int type = getItemViewType(position);
+            if (convertView == null) {
+                linearLayout = convertView;
+                TextView textView = null;
+                switch (type) {
+                    case TYPE_ITEM:
+                        linearLayout = mInflater.inflate(R.layout.list_item, null);
+                        textView = (TextView) linearLayout.findViewById(R.id.item_text);
+                        break;
+                    case TYPE_SEPARATOR:
+                        linearLayout = mInflater.inflate(R.layout.list_header, null);
+                        textView = (TextView) linearLayout.findViewById(R.id.header_text);
+                        break;
+                    case TYPE_SPACE:
+                        linearLayout = mInflater.inflate(R.layout.list_section_space, null);
+                        textView = (TextView) linearLayout.findViewById(R.id.space);
+                }
+                textView.setText(getItem(position));
+            }
+            else {
+            linearLayout = (LinearLayout) convertView;
+            }
+
+            return linearLayout;
+        }
+
+    }
+
 }
