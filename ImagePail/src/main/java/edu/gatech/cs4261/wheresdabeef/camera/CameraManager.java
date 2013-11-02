@@ -29,13 +29,16 @@ public class CameraManager {
 
 		@Override
 		public void onShutter() {
-			// TODO Auto-generated method stub
 			location = LocationApi.stopPollingLocation();
 		}
 		
 	}
 	
 	private Camera camera;
+
+    public CameraManager(){
+
+    }
 
 	public void openCamera(Context context){
         LocationApi.startPollingLocation(context);
