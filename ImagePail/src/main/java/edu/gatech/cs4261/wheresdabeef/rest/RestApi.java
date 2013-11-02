@@ -9,18 +9,19 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class RestApi {
 
-	public static JSONObject getResponse(String url) {
+	public static JSONArray getResponse(String url) {
 		HttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(url);
 		try {
 			HttpResponse response = client.execute(get);
 			try {
-				JSONObject json = new JSONObject(EntityUtils.toString(response
+				JSONArray json = new JSONArray(EntityUtils.toString(response
 						.getEntity()));
 				return json;
 			} catch (ParseException e) {
