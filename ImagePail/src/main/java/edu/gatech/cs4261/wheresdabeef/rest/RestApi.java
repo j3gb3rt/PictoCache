@@ -15,6 +15,38 @@ import org.json.JSONObject;
 
 public class RestApi {
 
+    /*
+
+    public static enum RequestMethod {
+		GET, POST
+	};
+
+	public static JSONObject getResponse(String url, RequestMethod method,
+			Map<String, String> params) throws IOException {
+		URL reqUrl = new URL(url);
+		HttpURLConnection httpCon = (HttpURLConnection) reqUrl.openConnection();
+		httpCon.setDoOutput(true);
+		httpCon.setRequestMethod(method.toString());
+
+		switch (method) {
+		case GET:
+			break;
+		case POST:
+			break;
+		}
+
+		httpCon.setFixedLengthStreamingMode(new String().getBytes().length);
+		PrintWriter out = new PrintWriter(httpCon.getOutputStream());
+		out.print(new String());
+		out.close();
+		InputStream in = new BufferedInputStream(httpCon.getInputStream());
+		httpCon.disconnect();
+		return null;
+	}
+
+
+     */
+
 	public static JSONArray getResponse(String url) {
 		HttpClient client = new DefaultHttpClient();
 		HttpGet get = new HttpGet(url);
