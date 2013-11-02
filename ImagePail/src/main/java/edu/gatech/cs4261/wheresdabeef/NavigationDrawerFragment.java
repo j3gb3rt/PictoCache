@@ -35,6 +35,7 @@ import java.util.ArrayList;
  */
 public class NavigationDrawerFragment extends Fragment {
 
+    public enum predefinedSection {NEARBY, NEW, POPULAR};
     /**
      * Remember the position of the selected item.
      */
@@ -82,7 +83,22 @@ public class NavigationDrawerFragment extends Fragment {
             mFromSavedInstanceState = true;
         }
 
+        adapter = new SectionedListAdapter();
+        adapter.addSeparatorItem("Featured");
+        adapter.addItem("Nearby");
+        adapter.addItem("New");
+        adapter.addItem("Popular");
+        adapter.addSectionSpace();
+        adapter.addSeparatorItem("Subscribed Tags");
+        ArrayList<String> localSubcriptions = LocalStorageManager.loadSubscriptions(getActivity());
+        for( String subscription : localSubcriptions) {
+            adapter.addItem(subscription);
+        }
+
         // Select either the default item (0) or the last selected item.
+        if (mCurrentSelectedPosition == 0) {
+            mCurrentSelectedPosition = 1;
+        }
         selectItem(mCurrentSelectedPosition);
 
         // Indicate that this fragment would like to influence the set of actions in the action bar.
@@ -100,13 +116,6 @@ public class NavigationDrawerFragment extends Fragment {
                 selectItem(position);
             }
         });
-        adapter = new SectionedListAdapter();
-        adapter.addSeparatorItem("Featured");
-        adapter.addItem("Nearby");
-        adapter.addItem("New");
-        adapter.addItem("Popular");
-        adapter.addSectionSpace();
-        adapter.addSeparatorItem("Subscribed Tags");
 
         mDrawerListView.setAdapter(adapter);
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
@@ -200,7 +209,7 @@ public class NavigationDrawerFragment extends Fragment {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
         if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
+            mCallbacks.onNavigationDrawerItemSelected(adapter.isPredefined(position), adapter.getItem(position));
         }
     }
 
@@ -281,7 +290,7 @@ public class NavigationDrawerFragment extends Fragment {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(int position);
+        void onNavigationDrawerItemSelected(boolean predefined, String keyword);
     }
 
     private class SectionedListAdapter extends BaseAdapter {
@@ -298,6 +307,28 @@ public class NavigationDrawerFragment extends Fragment {
 
         public SectionedListAdapter() {
             mInflater = getActivity().getLayoutInflater();
+        }
+
+        public boolean areAllItemsEnabled() {
+            return false;
+        }
+
+        public boolean isPredefined(int position) {
+            if (position == 1 || position == 2 || position == 3) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+        public boolean isEnabled(int position) {
+            if (position == 0 || position == 4 || position == 5) {
+                return false;
+            }
+            else {
+                return true;
+            }
         }
 
         public void addItem(final String item) {
