@@ -1,6 +1,7 @@
 package edu.gatech.cs4261.wheresdabeef.domain;
 
 import android.graphics.Bitmap;
+import android.location.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,13 @@ public class Image {
 
     public Image(final int id) {
         this.id = id;
+    }
+
+    public Image(Bitmap bmp, Location location){
+        this(0);
+        setImage(bmp);
+        setLatitude(location.getLatitude());
+        setLongitude(location.getLongitude());
     }
 
     public int getId() {
