@@ -45,34 +45,20 @@ public class Home_feed extends ActionBarActivity
     }
 
     @Override
-    public void onNavigationDrawerItemSelected(int position) {
+    public void onNavigationDrawerItemSelected(boolean predefined, String keyword) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.container, PlaceholderFragment.newInstance(predefined, keyword))
                 .commit();
     }
 
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 1:
-                mTitle = getString(R.string.title_section1);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
-                mTitle = getString(R.string.title_section3);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section4);
-                break;
-            case 5:
-                mTitle = getString(R.string.title_section5);
-                break;
-            case 6:
-                mTitle = getString(R.string.title_section6);
-                break;
+    public void onSectionAttached(String keyword) {
+        if (keyword != null) {
+            mTitle = keyword;
+        }
+        else {
+            mTitle = "PictoCache";
         }
     }
 
@@ -125,18 +111,22 @@ public class Home_feed extends ActionBarActivity
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-        private static int section;
+        private static final String ARG_PREDEFINED_SECTION = "predefined section";
+        private static final String ARG_KEYWORD = "keyword";
+        private static boolean mPredefined;
+        private static String mKeyword;
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
+        public static PlaceholderFragment newInstance(boolean predefined, String keyword) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            args.putBoolean(ARG_PREDEFINED_SECTION, predefined);
+            args.putCharSequence(ARG_KEYWORD, keyword);
             fragment.setArguments(args);
-            section = sectionNumber;
+            mPredefined = predefined;
+            mKeyword = keyword;
             return fragment;
         }
 
@@ -149,7 +139,7 @@ public class Home_feed extends ActionBarActivity
             View rootView = inflater.inflate(R.layout.picture_grid_main, container, false);
 
             GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
-            final ImageAdapter imageAdapter = new ImageAdapter(getActivity(),section, true);
+            final ImageAdapter imageAdapter = new ImageAdapter(getActivity(), mPredefined, mKeyword);
             gridview.setAdapter(imageAdapter);
 
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -166,7 +156,7 @@ public class Home_feed extends ActionBarActivity
         public void onAttach(Activity activity) {
             super.onAttach(activity);
             ((Home_feed) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
+                    getArguments().getString(ARG_KEYWORD));
         }
     }
 

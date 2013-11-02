@@ -18,72 +18,25 @@ import java.util.ArrayList;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Integer> images;
-    public ImageAdapter(Context c, int i, boolean grid) {
+    public ImageAdapter(Context c, boolean predefined, String keyword) {
         mContext = c;
         images = new ArrayList<Integer>();
-        if (grid) {
-            switch (i)
-            {
-                case 1:
-                    images.add(0);
-                    images.add(1);
-                    images.add(2);
-                    images.add(3);
-                    images.add(4);
-                    images.add(5);
-                    break;
-                case 2:
-                    images.add(6);
-                    images.add(7);
-                    images.add(8);
-                    images.add(9);
-                    images.add(10);
-                    images.add(11);
-                    break;
-                case 3:
-                    images.add(1);
-                    images.add(3);
-                    images.add(5);
-                    images.add(7);
-                    images.add(9);
-                    images.add(11);
-                    break;
-                case 4:
-                    images.add(0);
-                    images.add(2);
-                    images.add(4);
-                    images.add(6);
-                    images.add(8);
-                    images.add(10);
-                    break;
-                case 5:
-                    images.add(6);
-                    images.add(0);
-                    images.add(7);
-                    images.add(1);
-                    images.add(8);
-                    images.add(2);
-                    break;
-                case 6:
-                    images.add(3);
-                    images.add(9);
-                    images.add(4);
-                    images.add(10);
-                    images.add(5);
-                    images.add(11);
-                    break;
-                default:
-                    images.add(1);
-            }
+        //DatabaseCommunicator dbc = new DataBaseCommunicator();
+        if (predefined) {
+            //dbc.getCategory(keyword);
         }
-        else{
-            if (i < 12)
-            images.add(i);
+        else {
+            //dbc.getUserCategory(keyword);
         }
-        //for(int i = 0; i < rand; i++)
-        //{
-        //    dog[i] = mThumbIds[(int) (8 * Math.random())];
-        //}
+
+
+    }
+
+    public ImageAdapter(Context c, int position) {
+        mContext = c;
+        images = new ArrayList<Integer>();
+        images.add(0);
+
     }
 
     public int getCount() {
