@@ -21,7 +21,7 @@ public class Keyword {
         return this.id;
     }
 
-    public String geyKeyword() {
+    public String getKeyword() {
         return this.keyword;
     }
 
