@@ -20,7 +20,7 @@ public class CameraManager {
 
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
-            image = BitmapFactory.decodeByteArray(data , 0, data.length);
+            image = BitmapFactory.decodeByteArray(data , 0, data .length);
         }
 		
 	}
@@ -37,14 +37,21 @@ public class CameraManager {
 	
 	private Camera camera;
 
-	public void openCamera(Context context) {
+	public void openCamera(Context context){
         LocationApi.startPollingLocation(context);
 		camera = Camera.open();
+        try{
+            camera.startPreview();
+        }catch(NullPointerException npe){
+            // do nothing here
+        }
 	}
 	
 	public Image takePicture(){
 		camera.takePicture(new CMShutterCallback(), null, null, new CMPicCallback());
-        return new Image(image, location);
+        camera.release();
+        Image im = new Image(image,location);
+        return im;
 	}
 
 }
