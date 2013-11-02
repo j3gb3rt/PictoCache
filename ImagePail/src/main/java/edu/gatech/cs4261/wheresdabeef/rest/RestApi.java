@@ -1,6 +1,17 @@
 package edu.gatech.cs4261.wheresdabeef.rest;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.ParseException;
@@ -13,64 +24,74 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class RestApi {
+import edu.gatech.cs4261.wheresdabeef.domain.Image;
 
-    /*
+public class RestApi {
+    private static final String CHARSET = "UTF-8";
 
     public static enum RequestMethod {
 		GET, POST
 	};
 
-	public static JSONObject getResponse(String url, RequestMethod method,
-			Map<String, String> params) throws IOException {
-		URL reqUrl = new URL(url);
-		HttpURLConnection httpCon = (HttpURLConnection) reqUrl.openConnection();
-		httpCon.setDoOutput(true);
-		httpCon.setRequestMethod(method.toString());
+    public static JSONArray get(String url, Map<String, String> params) throws IOException {
+        StringBuilder query = new StringBuilder();
+        for (String key : params.keySet()) {
+            query.append(
+                    String.format(key + "=%s&", URLEncoder.encode(params.get(key), CHARSET))
+            );
+        }
 
-		switch (method) {
-		case GET:
-			break;
-		case POST:
-			break;
-		}
+        HttpURLConnection connection = (HttpURLConnection) new URL(url + "?" + query).openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept-Charset", CHARSET);
 
-		httpCon.setFixedLengthStreamingMode(new String().getBytes().length);
-		PrintWriter out = new PrintWriter(httpCon.getOutputStream());
-		out.print(new String());
-		out.close();
-		InputStream in = new BufferedInputStream(httpCon.getInputStream());
-		httpCon.disconnect();
-		return null;
-	}
+        BufferedReader reader =
+                new BufferedReader(new InputStreamReader(connection.getInputStream(), CHARSET));
+        String response = reader.readLine();
 
+        try {
+            return new JSONArray(response);
+        } catch (final JSONException e) {
+            throw null;
+        }
+    }
 
-     */
+    public static JSONArray post(String url, Map<String, String> params) throws IOException {
+        StringBuilder query = new StringBuilder();
+        for (String key : params.keySet()) {
+            query.append(
+                    String.format(key + "=%s&", URLEncoder.encode(params.get(key), CHARSET))
+            );
+        }
 
-	public static JSONArray getResponse(String url) {
-		HttpClient client = new DefaultHttpClient();
-		HttpGet get = new HttpGet(url);
-		try {
-			HttpResponse response = client.execute(get);
-			try {
-				JSONArray json = new JSONArray(EntityUtils.toString(response
-						.getEntity()));
-				return json;
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true); // Triggers POST
+        connection.setRequestProperty("Accept-Charset", CHARSET);
+        connection.setRequestProperty("Content-Type",
+                "application/x-www-form-urlencoded;charset=" + CHARSET);
+
+        OutputStream output = connection.getOutputStream();
+        try {
+            output.write(query.toString().getBytes(CHARSET));
+        } finally {
+            output.close();
+        }
+
+        BufferedReader reader =
+                new BufferedReader(new InputStreamReader(connection.getInputStream(), CHARSET));
+        String response = reader.readLine();
+
+        try {
+            return new JSONArray(response);
+        } catch (final JSONException e) {
+            throw null;
+        }
+    }
+
+    // http://stackoverflow.com/questions/2793150/how-to-use-java-net-urlconnection-to-fire-and-handle-http-requests
+    public static JSONArray postImage(String url, Image image) throws IOException {
+        return null;
+    }
 
 }

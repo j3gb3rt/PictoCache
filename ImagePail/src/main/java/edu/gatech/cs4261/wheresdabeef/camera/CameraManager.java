@@ -20,7 +20,7 @@ public class CameraManager {
 
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
-            image = BitmapFactory.decodeByteArray(data , 0, data .length);
+            image = BitmapFactory.decodeByteArray(data , 0, data.length);
         }
 		
 	}
@@ -44,8 +44,7 @@ public class CameraManager {
 	
 	public Image takePicture(){
 		camera.takePicture(new CMShutterCallback(), null, null, new CMPicCallback());
-        Image im = new Image(image,location);
-        return im;
+        return new Image(image, location);
 	}
 
 }
