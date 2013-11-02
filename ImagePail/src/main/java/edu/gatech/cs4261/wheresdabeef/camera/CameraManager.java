@@ -37,13 +37,19 @@ public class CameraManager {
 	
 	private Camera camera;
 
-	public void openCamera(Context context) {
+	public void openCamera(Context context){
         LocationApi.startPollingLocation(context);
 		camera = Camera.open();
+        try{
+            camera.startPreview();
+        }catch(NullPointerException npe){
+            // do nothing here
+        }
 	}
 	
 	public Image takePicture(){
 		camera.takePicture(new CMShutterCallback(), null, null, new CMPicCallback());
+        camera.release();
         Image im = new Image(image,location);
         return im;
 	}
