@@ -2,8 +2,6 @@ package edu.gatech.cs4261.wheresdabeef;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -24,7 +22,6 @@ import android.widget.GridView;
 
 import java.io.File;
 
-import edu.gatech.cs4261.wheresdabeef.domain.Image;
 import edu.gatech.cs4261.wheresdabeef.location.LocationApi;
 
 
@@ -148,13 +145,14 @@ public class Home_feed extends ActionBarActivity
 
                 File imagefile = new File(getExternalCacheDir().getAbsolutePath() + "/.temp.jpg");
                 //Bitmap image2 = (Bitmap) data.getExtras().get("data");
-                Bitmap image = BitmapFactory.decodeFile(getExternalCacheDir().getAbsolutePath() + "/.temp.jpg");
-                long length = imagefile.length();
-                //Location location = LocationApi.stopPollingLocation();
-                Image takenPicture = new Image(-1);
-                takenPicture.setImage(image);
+                Uri imageLocation = Uri.fromFile(imagefile);
+                //Bitmap image = BitmapFactory.decodeFile(getExternalCacheDir().getAbsolutePath() + "/.temp.jpg");
+                //long length = imagefile.length();
+                //LocationApi.stopPollingLocation();
+                //Image takenPicture = new Image(-1);
+                //takenPicture.setImage(image);
                 Intent intent = new Intent(this, Single_image.class);
-                intent.putExtra("image", takenPicture);
+                intent.putExtra("imageLocation", imageLocation);
                 startActivity(intent);
             } else if (resultCode == RESULT_CANCELED) {
                 //image = null;

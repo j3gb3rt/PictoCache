@@ -1,5 +1,8 @@
 package edu.gatech.cs4261.wheresdabeef;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,8 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.util.Locale;
-
-import edu.gatech.cs4261.wheresdabeef.domain.Image;
 
 public class Single_image extends ActionBarActivity {
 
@@ -96,7 +97,7 @@ public class Single_image extends ActionBarActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1, (Image) getIntent().getExtras().getSerializable("image"));
+            return PlaceholderFragment.newInstance(position + 1, (Uri) getIntent().getExtras().getParcelable("imageLocation"));
         }
 
         @Override
@@ -134,11 +135,11 @@ public class Single_image extends ActionBarActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber, Image image) {
+        public static PlaceholderFragment newInstance(int sectionNumber, Uri imageLocation) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            args.putSerializable("image", image);
+            args.putParcelable("imageLocation", imageLocation);
             fragment.setArguments(args);
             return fragment;
         }
@@ -151,9 +152,10 @@ public class Single_image extends ActionBarActivity {
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_single_picture, container, false);
             ImageView imageView = (ImageView) rootView.findViewById(R.id.imageView);
-            int imageId = getArguments().getInt("image");
+            Uri imageLocation = (Uri) getArguments().getParcelable("imageLocation");
+            Bitmap image = BitmapFactory.decodeFile(imageLocation.getPath());
             int width = (int) getResources().getDimension(R.dimen.single_image_width);
-            imageView.setImageBitmap(((Image) getArguments().getSerializable("image")).getImage());
+            imageView.setImageBitmap(image);
             return rootView;
         }
     }

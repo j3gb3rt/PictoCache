@@ -1,7 +1,6 @@
 package edu.gatech.cs4261.wheresdabeef.domain;
 
 import android.graphics.Bitmap;
-import android.location.Location;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,12 +23,12 @@ public class Image implements Serializable{
         this.id = id;
     }
 
-    public Image(Bitmap bmp, Location location){
-        this(0);
-        setImage(bmp);
-        setLatitude(location.getLatitude());
-        setLongitude(location.getLongitude());
-    }
+    //public Image(Bitmap bmp, Location location){
+    //    this(0);
+    //    setImage(bmp);
+    //    setLatitude(location.getLatitude());
+    //    setLongitude(location.getLongitude());
+    //}
 
     public int getId() {
         return id;
