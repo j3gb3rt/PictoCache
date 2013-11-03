@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -23,7 +22,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import edu.gatech.cs4261.wheresdabeef.camera.CameraManager;
+import java.io.File;
+
 import edu.gatech.cs4261.wheresdabeef.domain.Image;
 import edu.gatech.cs4261.wheresdabeef.location.LocationApi;
 
@@ -130,9 +130,9 @@ public class Home_feed extends ActionBarActivity
 
     private void openCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        Uri fileUri = CameraManager.getOutputMediaFileUri(this); // create a file to save the image
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, getExternalCacheDir().getAbsolutePath() + "/temp"); // set the image file name
+        File savelocation = new File(getExternalCacheDir().getAbsolutePath() + "/.temp.jpg");
+        Uri fileUri = Uri.fromFile(savelocation); // create a file to save the image
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
 
         LocationApi.startPollingLocation(this);
         // start the image capture Intent
@@ -146,9 +146,13 @@ public class Home_feed extends ActionBarActivity
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
 
-                Bitmap image = BitmapFactory.decodeFile(getExternalCacheDir().getAbsolutePath() + "/temp");
-                Location location = LocationApi.stopPollingLocation();
-                Image takenPicture = new Image(image, location);
+                File imagefile = new File(getExternalCacheDir().getAbsolutePath() + "/.temp.jpg");
+                //Bitmap image2 = (Bitmap) data.getExtras().get("data");
+                Bitmap image = BitmapFactory.decodeFile(getExternalCacheDir().getAbsolutePath() + "/.temp.jpg");
+                long length = imagefile.length();
+                //Location location = LocationApi.stopPollingLocation();
+                Image takenPicture = new Image(-1);
+                takenPicture.setImage(image);
                 Intent intent = new Intent(this, Single_image.class);
                 intent.putExtra("image", takenPicture);
                 startActivity(intent);

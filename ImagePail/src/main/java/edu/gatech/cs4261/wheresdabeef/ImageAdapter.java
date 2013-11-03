@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Integer> images;
+    private Bitmap image;
     public ImageAdapter(Context c, boolean predefined, String keyword) {
         mContext = c;
         images = new ArrayList<Integer>();
@@ -32,10 +33,9 @@ public class ImageAdapter extends BaseAdapter {
 
     }
 
-    public ImageAdapter(Context c, int position) {
+    public ImageAdapter(Context c, Bitmap bitmap) {
         mContext = c;
-        images = new ArrayList<Integer>();
-        images.add(0);
+        image = bitmap;
 
     }
 
@@ -110,7 +110,7 @@ public class ImageAdapter extends BaseAdapter {
         }
         if (position < images.size())
         {
-            imageView.setImageBitmap(decodeSampledBitmapFromResource(mContext.getResources(),mThumbIds[images.get(position)], 100, 100));
+            imageView.setImageBitmap(image);
         }
         return imageView;
     }
