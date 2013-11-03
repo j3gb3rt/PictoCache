@@ -3,13 +3,14 @@ package edu.gatech.cs4261.wheresdabeef.domain;
 import android.graphics.Bitmap;
 import android.location.Location;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Kyle on 11/2/13.
  */
-public class Image {
+public class Image implements Serializable{
     private final int id;
 
     private double latitude;

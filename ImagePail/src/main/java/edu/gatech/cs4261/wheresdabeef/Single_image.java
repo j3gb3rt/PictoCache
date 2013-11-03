@@ -17,6 +17,8 @@ import android.widget.ImageView;
 
 import java.util.Locale;
 
+import edu.gatech.cs4261.wheresdabeef.domain.Image;
+
 public class Single_image extends ActionBarActivity {
 
     /**
@@ -37,6 +39,8 @@ public class Single_image extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         setContentView(R.layout.picture_grid_single);
 
         ActionBar actionBar = getSupportActionBar();
@@ -92,13 +96,13 @@ public class Single_image extends ActionBarActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1, getIntent().getExtras().getInt("image"));
+            return PlaceholderFragment.newInstance(position + 1, (Image) getIntent().getExtras().getSerializable("image"));
         }
 
         @Override
         public int getCount() {
-            // Show 3 total pages.
-            return 3;
+            //Show 3 total pages.
+            return 1;
         }
 
         @Override
@@ -130,11 +134,11 @@ public class Single_image extends ActionBarActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber, int image) {
+        public static PlaceholderFragment newInstance(int sectionNumber, Image image) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            args.putInt("image", image);
+            args.putSerializable("image", image);
             fragment.setArguments(args);
             return fragment;
         }
@@ -149,7 +153,7 @@ public class Single_image extends ActionBarActivity {
             ImageView imageView = (ImageView) rootView.findViewById(R.id.imageView);
             int imageId = getArguments().getInt("image");
             int width = (int) getResources().getDimension(R.dimen.single_image_width);
-            imageView.setImageBitmap(ImageAdapter.decodeSampledBitmapFromResource(getActivity().getResources(),imageId, width, width) );
+            imageView.setImageBitmap(((Image) getArguments().getSerializable("image")).getImage());
             return rootView;
         }
     }

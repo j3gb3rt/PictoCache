@@ -2,12 +2,19 @@ package edu.gatech.cs4261.wheresdabeef;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +22,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+
+import edu.gatech.cs4261.wheresdabeef.camera.CameraManager;
+import edu.gatech.cs4261.wheresdabeef.domain.Image;
+import edu.gatech.cs4261.wheresdabeef.location.LocationApi;
+
 
 public class Home_feed extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -28,6 +40,7 @@ public class Home_feed extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +90,13 @@ public class Home_feed extends ActionBarActivity
             // if the drawer is not showing. Otherwise, let the drawer
             // decide what to show in the action bar.
             getMenuInflater().inflate(R.menu.home_feed, menu);
+            MenuItem searchItem = menu.findItem(R.id.action_search);
+            SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+            //SearchManager searchManager =
+            //        	         (SearchManager)getSystemService(Context.SEARCH_SERVICE);
+            //SearchableInfo info =
+            //        	         searchManager.getSearchableInfo(getComponentName());
+            //searchView.setSearchableInfo(info);
             restoreActionBar();
             return true;
         }
@@ -92,6 +112,13 @@ public class Home_feed extends ActionBarActivity
             case R.id.action_settings:
                 openSettings();
                 return true;
+            case R.id.action_camera:
+                openCamera();
+
+            //case R.id.action_search:
+                //MenuItemCompat.expandActionView(item);
+                //Toast.makeText(this , "Example action.", Toast.LENGTH_SHORT).show();
+                //return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -101,6 +128,39 @@ public class Home_feed extends ActionBarActivity
         startActivity(intent);
     }
 
+    private void openCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        Uri fileUri = CameraManager.getOutputMediaFileUri(this); // create a file to save the image
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, getExternalCacheDir().getAbsolutePath() + "/temp"); // set the image file name
+
+        LocationApi.startPollingLocation(this);
+        // start the image capture Intent
+        this.startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+
+                Bitmap image = BitmapFactory.decodeFile(getExternalCacheDir().getAbsolutePath() + "/temp");
+                Location location = LocationApi.stopPollingLocation();
+                Image takenPicture = new Image(image, location);
+                Intent intent = new Intent(this, Single_image.class);
+                intent.putExtra("image", takenPicture);
+                startActivity(intent);
+            } else if (resultCode == RESULT_CANCELED) {
+                //image = null;
+                //location = null;
+            } else {
+                //image = null;
+                //location = null;
+            }
+        }
+    }
 
 
     /**
