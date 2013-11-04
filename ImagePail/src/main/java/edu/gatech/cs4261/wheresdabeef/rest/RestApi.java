@@ -112,7 +112,6 @@ public class RestApi {
     public static JSONObject postImage(String url, Image image) throws IOException {
         String boundary = Long.toHexString(System.currentTimeMillis());
         String CRLF = "\r\n"; // Line separator required by multipart/form-data.
-        String charset = "UTF-8";
 
         HttpURLConnection connection =
                 (HttpURLConnection) new URL(url).openConnection();
@@ -130,7 +129,7 @@ public class RestApi {
             writer.append("--" + boundary).append(CRLF);
             writer.append("Content-Disposition: form-data; name=\"lat\"")
                     .append(CRLF);
-            writer.append("Content-Type: text/plain; charset=" + charset).append(CRLF);
+            writer.append("Content-Type: text/plain; charset=" + CHARSET).append(CRLF);
             writer.append(CRLF);
             writer.append(String.valueOf(image.getLatitude())).append(CRLF).flush();
 
@@ -138,10 +137,11 @@ public class RestApi {
             writer.append("--" + boundary).append(CRLF);
             writer.append("Content-Disposition: form-data; name=\"lon\"")
                     .append(CRLF);
-            writer.append("Content-Type: text/plain; charset=" + charset).append(CRLF);
+            writer.append("Content-Type: text/plain; charset=" + CHARSET).append(CRLF);
             writer.append(CRLF);
             writer.append(String.valueOf(image.getLongitude())).append(CRLF).flush();
 
+            /*
             // Send image
             writer.append("--" + boundary).append(CRLF);
             writer.append(
@@ -163,6 +163,7 @@ public class RestApi {
                 try { picInput.close(); } catch (IOException logOrIgnore) {}
             }
             writer.append(CRLF).flush();
+            */
 
             writer.append("--" + boundary + "--").append(CRLF);
         } finally {
