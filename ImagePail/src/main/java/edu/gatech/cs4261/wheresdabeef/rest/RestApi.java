@@ -110,15 +110,12 @@ public class RestApi {
 
     // http://stackoverflow.com/questions/2793150/how-to-use-java-net-urlconnection-to-fire-and-handle-http-requests
     public static JSONObject postImage(String url, Image image) throws IOException {
-        StringBuilder params = new StringBuilder();
-        params.append("lat=").append(image.getLatitude()).append("&");
-        params.append("lon=").append(image.getLongitude()).append("&");
-
         String boundary = Long.toHexString(System.currentTimeMillis());
         String CRLF = "\r\n"; // Line separator required by multipart/form-data.
+        String charset = "UTF-8";
 
         HttpURLConnection connection =
-                (HttpURLConnection) new URL(url + "?" + params.toString()).openConnection();
+                (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestMethod("POST");
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-Type",
@@ -128,6 +125,22 @@ public class RestApi {
         try {
             OutputStream outputStream = connection.getOutputStream();
             writer = new PrintWriter(new OutputStreamWriter(outputStream, CHARSET), true);
+
+            // Send normal param.
+            writer.append("--" + boundary).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"lat\"")
+                    .append(CRLF);
+            writer.append("Content-Type: text/plain; charset=" + charset).append(CRLF);
+            writer.append(CRLF);
+            writer.append(String.valueOf(image.getLatitude())).append(CRLF).flush();
+
+            // Send normal param.
+            writer.append("--" + boundary).append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"lon\"")
+                    .append(CRLF);
+            writer.append("Content-Type: text/plain; charset=" + charset).append(CRLF);
+            writer.append(CRLF);
+            writer.append(String.valueOf(image.getLongitude())).append(CRLF).flush();
 
             // Send image
             writer.append("--" + boundary).append(CRLF);
@@ -149,30 +162,6 @@ public class RestApi {
             } finally {
                 try { picInput.close(); } catch (IOException logOrIgnore) {}
             }
-
-            writer.append(CRLF).flush();
-
-            // Send thumbnail
-            writer.append("--" + boundary).append(CRLF);
-            writer.append(
-                    "Content-Disposition: form-data; name=\"tn\"; filename=\"tn\"").append(CRLF);
-            writer.append("Content-Type: image/png").append(CRLF);
-            writer.append("Content-Transfer-Encoding: binary").append(CRLF);
-            writer.append(CRLF).flush();
-
-            Uri tn = image.getThumbnail();
-            InputStream tnInput = new FileInputStream(new File(tn.getPath()));
-            try {
-                byte[] buffer = new byte[1024];
-                for (int length = 0; (length = tnInput.read(buffer)) > 0;) {
-                    outputStream.write(buffer, 0, length);
-                }
-                outputStream.flush(); // Important! Output cannot be closed. Close of
-                // writer will close output as well.
-            } finally {
-                try { tnInput.close(); } catch (IOException logOrIgnore) {}
-            }
-
             writer.append(CRLF).flush();
 
             writer.append("--" + boundary + "--").append(CRLF);
