@@ -7,6 +7,8 @@ import org.apache.http.NameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.gatech.cs4261.wheresdabeef.domain.Image;
+
 /**
  * Created by HolocronCoder on 11/4/13.
  */
@@ -25,6 +27,8 @@ public class RestData {
         GET_IMAGE(HttpAction.GET),
         /**
          * Optional Parameters:
+         *      sd (sort direction)
+         *      sc (sort column)
          *      l (how many images, max)
          *
          *      - AND -
@@ -62,7 +66,7 @@ public class RestData {
         POST_IMAGE(HttpAction.POST),
         /**
          * Expected Parameters:
-         *      kw (Keyword object)
+         *      kw (Keyword string)
          *      imgId (ID of associated image)
          */
         POST_KEYWORD(HttpAction.POST);

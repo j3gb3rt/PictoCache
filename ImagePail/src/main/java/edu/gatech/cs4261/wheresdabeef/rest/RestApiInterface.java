@@ -1,13 +1,19 @@
 package edu.gatech.cs4261.wheresdabeef.rest;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +40,16 @@ public class RestApiInterface {
     public static final String BASE_KW_URL =
             "http://dev.m.gatech.edu/d/gtg310x/api/imagepail/keyword";
 
-    private void fillImageData(final Image i) throws IOException {
-        String url = BASE_IMG_URL + "/" + i.getId();
+    public Uri getImageData(final int id) throws IOException {
+        String url = BASE_IMG_URL + "/" + id;
 
         byte[] image = RestApi.getImage(url, "image");
-        //i.setImage(BitmapFactory.decodeByteArray(image, 0, image.length));
-
-        byte[] thumbnail = RestApi.getImage(url, "thumbnail");
-        //i.setThumbnail(BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length));
+        Bitmap bmp = BitmapFactory.decodeByteArray(image, 0, image.length);
+        File f = new File(
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getPath()
+                        + File.separator + "img_" + ((new Date()).getTime() + ".png"));
+        bmp.compress(Bitmap.CompressFormat.PNG, 50, new FileOutputStream(f));
+        return Uri.fromFile(f);
     }
 
     public Image getImage(final int id) throws IOException {
@@ -58,8 +66,6 @@ public class RestApiInterface {
         } catch (final JSONException e) {
             return null; // swallow error
         }
-
-        fillImageData(image);
 
         return image;
     }
@@ -106,8 +112,6 @@ public class RestApiInterface {
                 image.setLatitude(json.getDouble("latitude"));
                 image.setLongitude(json.getDouble("longitude"));
 
-                fillImageData(image);
-
                 images.add(image);
             }
         } catch (final JSONException e) {
@@ -127,32 +131,38 @@ public class RestApiInterface {
             return -1; // swallow error
         }
 
-        for (final Keyword kw : i.getKeywords()) {
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("k", kw.getKeyword());
-            params.put("imgId", String.valueOf(id));
-            RestApi.post(BASE_KW_URL + "/", params);
+        return id;
+    }
+
+    public int saveKeyword(final String kw, final int imgId) throws IOException {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("kw", kw);
+        params.put("imgId", String.valueOf(imgId));
+
+        JSONObject json = RestApi.post(BASE_KW_URL + "/", params);
+
+        int id;
+        try {
+            id = json.getInt("id");
+        } catch (final JSONException e) {
+            return -1; // swallow error
         }
 
         return id;
     }
 
-    public List<Keyword> getPopularKeywords(final int limit) throws IOException {
+    public Map<String, Integer> getPopularKeywords(final Integer limit) throws IOException {
         Map<String, String> params = new HashMap<String, String>();
         params.put("l", String.valueOf(limit));
 
         JSONArray jsonArr = RestApi.get(BASE_KW_URL, params);
 
-        List<Keyword> keywords = new ArrayList<Keyword>();
+        Map<String, Integer> keywords = new HashMap<String, Integer>();
 
         try {
             for (int i = 0; i < jsonArr.length(); i++) {
                 JSONObject json = jsonArr.getJSONObject(i);
-
-                Keyword keyword = new Keyword(json.getInt("id"));
-                keyword.setKeyword(json.getString("keyword"));
-
-                keywords.add(keyword);
+                keywords.put(json.getString("keyword"), json.getInt("total"));
             }
         } catch (final JSONException e) {
             return null; // swallow error
