@@ -6,6 +6,8 @@ import android.net.Uri;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -136,8 +138,19 @@ public class RestApi {
             writer.append(CRLF).flush();
 
             Uri pic = image.getImage();
-            Bitmap picBmp = BitmapFactory.decodeFile(pic.getPath());
-            picBmp.compress(Bitmap.CompressFormat.PNG, 50, outputStream);
+            InputStream picInput = new FileInputStream(new File(pic.getPath()));
+            try {
+                byte[] buffer = new byte[1024];
+                for (int length = 0; (length = picInput.read(buffer)) > 0;) {
+                    outputStream.write(buffer, 0, length);
+                }
+                outputStream.flush(); // Important! Output cannot be closed. Close of
+                // writer will close output as well.
+            } finally {
+                try { picInput.close(); } catch (IOException logOrIgnore) {}
+            }
+
+            writer.append(CRLF).flush();
 
             // Send thumbnail
             writer.append("--" + boundary).append(CRLF);
@@ -148,10 +161,20 @@ public class RestApi {
             writer.append(CRLF).flush();
 
             Uri tn = image.getThumbnail();
-            Bitmap tnBmp = BitmapFactory.decodeFile(tn.getPath());
-            tnBmp.compress(Bitmap.CompressFormat.PNG, 50, outputStream);
+            InputStream tnInput = new FileInputStream(new File(tn.getPath()));
+            try {
+                byte[] buffer = new byte[1024];
+                for (int length = 0; (length = tnInput.read(buffer)) > 0;) {
+                    outputStream.write(buffer, 0, length);
+                }
+                outputStream.flush(); // Important! Output cannot be closed. Close of
+                // writer will close output as well.
+            } finally {
+                try { tnInput.close(); } catch (IOException logOrIgnore) {}
+            }
 
             writer.append(CRLF).flush();
+
             writer.append("--" + boundary + "--").append(CRLF);
         } finally {
             if (writer != null) writer.close();
