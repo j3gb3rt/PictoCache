@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -145,17 +146,18 @@ public class RestApi {
             writer.append("--" + boundary).append(CRLF);
             writer.append("Content-Disposition: form-data; name=\"img\"; filename=\"img.png\"").append(CRLF);
             writer.append("Content-Type: image/png").append(CRLF);
+            writer.append("Content-Transfer-Encoding: binary").append(CRLF);
             writer.append(CRLF).flush();
 
             File f = new File(image.getImage().getPath());
-            long l = f.length();
-            InputStream input = new FileInputStream(f);
+            BufferedInputStream input = new BufferedInputStream(new FileInputStream(f));
+            BufferedOutputStream output = new BufferedOutputStream(outputStream);
             try {
                 byte[] buffer = new byte[1024];
                 for (int length = 0; (length = input.read(buffer)) > 0;) {
-                    outputStream.write(buffer, 0, length);
+                    output.write(buffer, 0, length);
                 }
-                outputStream.flush();
+                output.flush();
             } finally {
                 try { input.close(); } catch (IOException e) {}
             }
