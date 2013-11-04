@@ -2,6 +2,7 @@ package edu.gatech.cs4261.wheresdabeef;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -148,11 +149,12 @@ public class Home_feed extends ActionBarActivity
                 Uri imageLocation = Uri.fromFile(imagefile);
                 //Bitmap image = BitmapFactory.decodeFile(getExternalCacheDir().getAbsolutePath() + "/.temp.jpg");
                 //long length = imagefile.length();
-                //LocationApi.stopPollingLocation();
+                Location location = LocationApi.stopPollingLocation();
                 //Image takenPicture = new Image(-1);
                 //takenPicture.setImage(image);
                 Intent intent = new Intent(this, Single_image.class);
                 intent.putExtra("imageLocation", imageLocation);
+                intent.putExtra("location", location);
                 startActivity(intent);
             } else if (resultCode == RESULT_CANCELED) {
                 //image = null;
