@@ -71,23 +71,29 @@ public class RestApiInterface {
      * @param sortCol The initial column to sort
      * @param limit The max number of records to return
      * @param keyword A keyword to search on. Exclusive with Lat&Lon
-     * @param latitude A latitude to search on, must include longitude
-     * @param longitude A longitude to search on, must include latitude
+     * @param minLat A minimum latitude to search on, must include the other 3
+     * @param maxLat A maximum latitude to search on, must include the other 3
+     * @param minLon A minimum longitude to search on, must include the other 3
+     * @param maxLon A maximum longitude to search on, must include the other 3
      * @return An ArrayList of Image objects, potentially empty.
      */
     public List<Image> getImages(final String sortDir,
                                  final String sortCol,
-                                 final int limit,
+                                 final Integer limit,
                                  final String keyword,
-                                 final double latitude,
-                                 final double longitude) throws IOException {
+                                 final Double minLat,
+                                 final Double maxLat,
+                                 final Double minLon,
+                                 final Double maxLon) throws IOException {
         Map<String, String> params = new HashMap<String, String>();
         params.put("sd", sortDir);
         params.put("sc", sortCol);
         params.put("l", String.valueOf(limit));
         params.put("k", keyword);
-        params.put("lat", String.valueOf(latitude));
-        params.put("lon", String.valueOf(longitude));
+        params.put("minLat", String.valueOf(minLat));
+        params.put("maxLat", String.valueOf(maxLat));
+        params.put("minLon", String.valueOf(minLon));
+        params.put("maxLon", String.valueOf(maxLon));
         JSONArray jsonArr = RestApi.get(BASE_IMG_URL, params);
 
         List<Image> images = new ArrayList<Image>();
