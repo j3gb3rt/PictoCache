@@ -149,12 +149,12 @@ public class Home_feed extends ActionBarActivity
                 Uri imageLocation = Uri.fromFile(imagefile);
                 //Bitmap image = BitmapFactory.decodeFile(getExternalCacheDir().getAbsolutePath() + "/.temp.jpg");
                 //long length = imagefile.length();
-                Location location = LocationApi.stopPollingLocation();
+                Location coordinates = LocationApi.stopPollingLocation();
                 //Image takenPicture = new Image(-1);
                 //takenPicture.setImage(image);
                 Intent intent = new Intent(this, Single_image.class);
                 intent.putExtra("imageLocation", imageLocation);
-                intent.putExtra("location", location);
+                intent.putExtra("coordinates", coordinates);
                 startActivity(intent);
             } else if (resultCode == RESULT_CANCELED) {
                 //image = null;

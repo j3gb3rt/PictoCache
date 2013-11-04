@@ -1,6 +1,6 @@
 package edu.gatech.cs4261.wheresdabeef.domain;
 
-import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 
 import java.io.Serializable;
@@ -24,6 +24,13 @@ public class Image implements Serializable{
         this.id = id;
     }
 
+    public Image(Uri imageLocation, Location location) {
+        this(-1);
+        setImage(imageLocation);
+        setThumbnail(imageLocation);
+        setLatitude(location.getLatitude());
+        setLongitude(location.getLongitude());
+    }
     public int getId() {
         return id;
     }

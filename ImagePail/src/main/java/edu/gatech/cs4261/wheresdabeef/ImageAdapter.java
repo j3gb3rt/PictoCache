@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,30 @@ public class ImageAdapter extends BaseAdapter {
         }
 
         return inSampleSize;
+    }
+
+    public static Bitmap decodeSampledBitmap(Uri imageLocation, int reqWidth, int reqHeight) {
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(imageLocation.getPath(), options);
+
+        //ExifInterface exif = null;
+
+        //try {
+            //exif = new ExifInterface(imageLocation.getPath());
+
+        //} catch (IOException e) {
+            //e.printStackTrace();
+        //}
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth,
+                reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(imageLocation.getPath(), options);
     }
 
     public static Bitmap decodeSampledBitmapFromResource(Resources res,

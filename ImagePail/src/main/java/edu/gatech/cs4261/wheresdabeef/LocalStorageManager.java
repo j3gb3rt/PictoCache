@@ -26,6 +26,8 @@ public class LocalStorageManager {
 
     public static ArrayList<String> loadSubscriptions(Context context) {
         ArrayList<String> subscriptions = null;
+
+
         try {
             ObjectInputStream objectInputStream = new ObjectInputStream(context.openFileInput(subcriptionFile));
             subscriptions = (ArrayList) objectInputStream.readObject();

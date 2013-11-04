@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import java.util.Date;
 
 /**
  * Created by Kyle M.
@@ -58,10 +59,21 @@ public class LocationApi {
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         String locationService = locationManager.getBestProvider(criteria, true);
         locationManager.requestLocationUpdates(locationService, 0, 0, locationListener);
+
+        currLocation = locationManager.getLastKnownLocation(locationService);
+
     }
 
     public static Location stopPollingLocation() {
         locationManager.removeUpdates(locationListener);
-        return currLocation;
+        if (currLocation != null) {
+            return currLocation;
+        }
+        else {
+            currLocation.setLatitude(0);
+            currLocation.setAltitude(0);
+            currLocation.setTime(new Date().getTime());
+            return currLocation;
+        }
     }
 }
