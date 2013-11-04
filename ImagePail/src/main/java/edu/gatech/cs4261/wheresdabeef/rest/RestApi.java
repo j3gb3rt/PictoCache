@@ -147,7 +147,9 @@ public class RestApi {
             writer.append("Content-Type: image/png").append(CRLF);
             writer.append(CRLF).flush();
 
-            InputStream input = new FileInputStream(new File(image.getImage().getPath()));
+            File f = new File(image.getImage().getPath());
+            long l = f.length();
+            InputStream input = new FileInputStream(f);
             try {
                 byte[] buffer = new byte[1024];
                 for (int length = 0; (length = input.read(buffer)) > 0;) {
