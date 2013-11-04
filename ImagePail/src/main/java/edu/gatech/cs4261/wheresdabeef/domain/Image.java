@@ -1,6 +1,7 @@
 package edu.gatech.cs4261.wheresdabeef.domain;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,19 +17,12 @@ public class Image implements Serializable{
     private double longitude;
     private List<Keyword> keywords;
 
-    private Bitmap thumbnail;
-    private Bitmap image;
+    private Uri thumbnail;
+    private Uri image;
 
     public Image(final int id) {
         this.id = id;
     }
-
-    //public Image(Bitmap bmp, Location location){
-    //    this(0);
-    //    setImage(bmp);
-    //    setLatitude(location.getLatitude());
-    //    setLongitude(location.getLongitude());
-    //}
 
     public int getId() {
         return id;
@@ -61,19 +55,19 @@ public class Image implements Serializable{
         this.keywords = keywords;
     }
 
-    public Bitmap getThumbnail() {
+    public Uri getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(Bitmap thumbnail) {
+    public void setThumbnail(Uri thumbnail) {
         this.thumbnail = thumbnail;
     }
 
-    public Bitmap getImage() {
+    public Uri getImage() {
         return image;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(Uri image) {
         this.image = image;
     }
 

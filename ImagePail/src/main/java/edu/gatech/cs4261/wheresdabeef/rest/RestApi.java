@@ -1,6 +1,8 @@
 package edu.gatech.cs4261.wheresdabeef.rest;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -133,8 +135,9 @@ public class RestApi {
             writer.append("Content-Transfer-Encoding: binary").append(CRLF);
             writer.append(CRLF).flush();
 
-            Bitmap pic = image.getImage();
-            pic.compress(Bitmap.CompressFormat.PNG, 50, outputStream);
+            Uri pic = image.getImage();
+            Bitmap picBmp = BitmapFactory.decodeFile(pic.getPath());
+            picBmp.compress(Bitmap.CompressFormat.PNG, 50, outputStream);
 
             // Send thumbnail
             writer.append("--" + boundary).append(CRLF);
@@ -144,8 +147,9 @@ public class RestApi {
             writer.append("Content-Transfer-Encoding: binary").append(CRLF);
             writer.append(CRLF).flush();
 
-            Bitmap tn = image.getThumbnail();
-            tn.compress(Bitmap.CompressFormat.PNG, 50, outputStream);
+            Uri tn = image.getThumbnail();
+            Bitmap tnBmp = BitmapFactory.decodeFile(tn.getPath());
+            tnBmp.compress(Bitmap.CompressFormat.PNG, 50, outputStream);
 
             writer.append(CRLF).flush();
             writer.append("--" + boundary + "--").append(CRLF);

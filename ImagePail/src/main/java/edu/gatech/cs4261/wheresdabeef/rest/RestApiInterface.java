@@ -38,10 +38,10 @@ public class RestApiInterface {
         String url = BASE_IMG_URL + "/" + i.getId();
 
         byte[] image = RestApi.getImage(url, "image");
-        i.setImage(BitmapFactory.decodeByteArray(image, 0, image.length));
+        //i.setImage(BitmapFactory.decodeByteArray(image, 0, image.length));
 
         byte[] thumbnail = RestApi.getImage(url, "thumbnail");
-        i.setThumbnail(BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length));
+        //i.setThumbnail(BitmapFactory.decodeByteArray(thumbnail, 0, thumbnail.length));
     }
 
     public Image getImage(final int id) throws IOException {
