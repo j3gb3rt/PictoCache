@@ -19,17 +19,21 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.apache.http.message.BasicNameValuePair;
+
 import java.util.Locale;
 
 import edu.gatech.cs4261.wheresdabeef.domain.Image;
+import edu.gatech.cs4261.wheresdabeef.rest.RestApiV3;
+import edu.gatech.cs4261.wheresdabeef.rest.RestData;
 
 
-public class Single_image extends ActionBarActivity {
+public class Captured_image extends ActionBarActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
-     * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which will keep every
+     * {@link FragmentPagerAdapter} derivative, which will keep every
      * loaded fragment in memory. If this becomes too memory intensive, it
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
@@ -37,7 +41,7 @@ public class Single_image extends ActionBarActivity {
     SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
-     * The {@link android.support.v4.view.ViewPager} that will host the section contents.
+     * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
     static Image mImage;
@@ -47,7 +51,7 @@ public class Single_image extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
 
-        setContentView(R.layout.picture_grid_single);
+        setContentView(R.layout.picture_taken_single);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -65,9 +69,9 @@ public class Single_image extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
+        
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.single_image, menu);
+        getMenuInflater().inflate(R.menu.taken_image, menu);
         return true;
     }
 
@@ -77,6 +81,24 @@ public class Single_image extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
+            case R.id.action_upload:
+                RestApiV3 task = new RestApiV3(getApplication());
+                RestData data = new RestData();
+                data.setAction(RestData.RestAction.POST_IMAGE);
+                data.addParam(new BasicNameValuePair("lat", String.valueOf(mImage.getLatitude())));
+                data.addParam(new BasicNameValuePair("lon", String.valueOf(mImage.getLongitude())));
+                data.setImage(mImage.getImage());
+                data.setThumb(mImage.getThumbnail());
+
+                task.execute(data);
+
+//                RestApiInterface restApiInterface = new RestApiInterface();
+//                try {
+//                    restApiInterface.saveImage(mImage);
+//                }
+//                catch (Exception e) {
+//                    //do nothing
+//                }
             case R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
                 return true;
@@ -92,7 +114,7 @@ public class Single_image extends ActionBarActivity {
     }
 
     /**
-     * A {@link android.support.v4.app.FragmentPagerAdapter} that returns a fragment corresponding to
+     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -106,7 +128,8 @@ public class Single_image extends ActionBarActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             Uri imageLocation = (Uri) getIntent().getExtras().getParcelable("imageLocation");
-            return PlaceholderFragment.newInstance(position + 1, imageLocation);
+            Location coordinates = (Location) getIntent().getExtras().getParcelable("coordinates");
+            return PlaceholderFragment.newInstance(position + 1, imageLocation, coordinates);
         }
 
         @Override
@@ -144,11 +167,12 @@ public class Single_image extends ActionBarActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber, Uri imageLocation) {
+        public static PlaceholderFragment newInstance(int sectionNumber, Uri imageLocation, Location coordinates) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             args.putParcelable("imageLocation", imageLocation);
+            args.putParcelable("coordinates", coordinates);
             fragment.setArguments(args);
             return fragment;
         }
@@ -170,7 +194,7 @@ public class Single_image extends ActionBarActivity {
             Location coordinates = (Location) getArguments().getParcelable("coordinates");
             double latitude = coordinates.getLatitude();
             double longitude = coordinates.getLongitude();
-            Single_image.setImage(new Image(imageLocation, coordinates));
+            Captured_image.setImage(new Image(imageLocation, coordinates));
             textView.setText("Coordinates: " + latitude + ", " + longitude);
             return rootView;
         }

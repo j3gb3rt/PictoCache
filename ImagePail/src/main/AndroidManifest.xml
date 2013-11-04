@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="edu.gatech.cs4261.wheresdabeef.Single_image"
+            android:name=".Captured_image"
             android:label="@string/title_activity_single_image"
             android:parentActivityName="edu.gatech.cs4261.wheresdabeef.Home_feed" >
             <!-- Parent activity meta-data to support 4.0 and lower -->

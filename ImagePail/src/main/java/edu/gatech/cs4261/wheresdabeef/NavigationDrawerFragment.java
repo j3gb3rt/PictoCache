@@ -22,7 +22,6 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -209,7 +208,8 @@ public class NavigationDrawerFragment extends Fragment {
             mDrawerLayout.closeDrawer(mFragmentContainerView);
         }
         if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(adapter.isPredefined(position), adapter.getItem(position));
+            //mCallbacks.onNavigationDrawerItemSelected(adapter.isPredefined(position), adapter.getItem(position));
+            mCallbacks.onNavigationDrawerItemSelected(position);
         }
     }
 
@@ -284,7 +284,8 @@ public class NavigationDrawerFragment extends Fragment {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(boolean predefined, String keyword);
+        //void onNavigationDrawerItemSelected(boolean predefined, String keyword);
+        void onNavigationDrawerItemSelected(int sectionNumber);
     }
 
     private class SectionedListAdapter extends BaseAdapter {

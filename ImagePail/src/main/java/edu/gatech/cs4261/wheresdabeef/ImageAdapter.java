@@ -19,30 +19,95 @@ import java.util.ArrayList;
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Integer> images;
-    private Bitmap image;
-    public ImageAdapter(Context c, boolean predefined, String keyword) {
+    private static ArrayList<Uri> mImageLocations;
+    public ImageAdapter(Context c, int i, boolean grid) {
         mContext = c;
         images = new ArrayList<Integer>();
-        //DatabaseCommunicator dbc = new DataBaseCommunicator();
-        if (predefined) {
-            //dbc.getCategory(keyword);
+        if (grid) {
+            switch (i)
+            {
+                case 1:
+                    images.add(0);
+                    images.add(1);
+                    images.add(2);
+                    images.add(3);
+                    images.add(4);
+                    images.add(5);
+                    images.add(7);
+                    images.add(8);
+                    images.add(9);
+                    images.add(10);
+                    break;
+                case 2:
+                    images.add(6);
+                    images.add(7);
+                    images.add(8);
+                    images.add(9);
+                    images.add(10);
+                    images.add(11);
+                    break;
+                case 3:
+                    images.add(1);
+                    images.add(3);
+                    images.add(5);
+                    images.add(7);
+                    images.add(9);
+                    images.add(11);
+                    break;
+                case 4:
+                    images.add(0);
+                    images.add(2);
+                    images.add(4);
+                    images.add(6);
+                    images.add(8);
+                    images.add(10);
+                    break;
+                case 5:
+                    images.add(6);
+                    images.add(0);
+                    images.add(7);
+                    images.add(1);
+                    images.add(8);
+                    images.add(2);
+                    break;
+                case 6:
+                    images.add(3);
+                    images.add(9);
+                    images.add(4);
+                    images.add(10);
+                    images.add(5);
+                    images.add(11);
+                    break;
+                default:
+                    images.add(1);
+            }
         }
-        else {
-            //dbc.getUserCategory(keyword);
+        else{
+            if (i < 12)
+                images.add(i);
         }
-
-
+        //for(int i = 0; i < rand; i++)
+        //{
+        // dog[i] = mThumbIds[(int) (8 * Math.random())];
+        //}
     }
 
-    public ImageAdapter(Context c, Bitmap bitmap) {
+    public ImageAdapter(Context c,ArrayList<Uri> imageLocations) {
         mContext = c;
-        image = bitmap;
-
+        mImageLocations = new ArrayList<Uri>();
+        if (imageLocations != null) {
+            mImageLocations = imageLocations;
+        }
     }
 
     public int getCount() {
         return images.size();
     }
+
+    public Uri getImageUri(int position) {
+        return mImageLocations.get(position);
+    }
+
 
     public int getImageId(int position) {
         return mThumbIds[images.get(position)];
@@ -55,7 +120,6 @@ public class ImageAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return 0;
     }
-
     public static int calculateInSampleSize(BitmapFactory.Options options,
                                             int reqWidth, int reqHeight) {
         // Raw height and width of image
@@ -125,7 +189,7 @@ public class ImageAdapter extends BaseAdapter {
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         SquareImageView imageView;
-        if (convertView == null) {  // if it's not recycled, initialize some attributes
+        if (convertView == null) { // if it's not recycled, initialize some attributes
             imageView = new SquareImageView(mContext);
             //imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -135,7 +199,7 @@ public class ImageAdapter extends BaseAdapter {
         }
         if (position < images.size())
         {
-            imageView.setImageBitmap(image);
+            imageView.setImageBitmap(decodeSampledBitmapFromResource(mContext.getResources(),mThumbIds[images.get(position)], 100, 100));
         }
         return imageView;
     }
@@ -168,7 +232,5 @@ public class ImageAdapter extends BaseAdapter {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth()); //Snap to width
         }
-
-
     }
 }

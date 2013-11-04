@@ -30,6 +30,7 @@ public class RestApiV3 extends AsyncTask<RestData, Void, Boolean> {
     private Uri imageLoc;
     private List<Image> images;
     private Map<String, Integer> popularKeywords;
+    private RestData.RestAction action;
 
     @Override
     protected Boolean doInBackground(RestData... restDatas) {
@@ -118,11 +119,14 @@ public class RestApiV3 extends AsyncTask<RestData, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean aBool) {
         super.onPostExecute(aBool);
-
-        if (aBool) {
-            Toast.makeText(context, "Upload Successful!", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Upload Failed!", Toast.LENGTH_SHORT).show();
+        switch (action) {
+            case POST_IMAGE:
+                if (aBool) {
+                    Toast.makeText(context, "Upload Successful!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "Upload Failed!", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 }

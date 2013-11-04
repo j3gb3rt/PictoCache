@@ -55,12 +55,21 @@ public class Home_feed extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
     }
 
+//    @Override
+//    public void onNavigationDrawerItemSelected(boolean predefined, String keyword) {
+//        // update the main content by replacing fragments
+//        FragmentManager fragmentManager = getSupportFragmentManager();
+//        fragmentManager.beginTransaction()
+//                .replace(R.id.container, PlaceholderFragment.newInstance(predefined, keyword))
+//                .commit();
+//    }
+
     @Override
-    public void onNavigationDrawerItemSelected(boolean predefined, String keyword) {
+    public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(predefined, keyword))
+                .replace(R.id.container, PlaceholderFragment.newInstance(position))
                 .commit();
     }
 
@@ -152,7 +161,7 @@ public class Home_feed extends ActionBarActivity
                 Location coordinates = LocationApi.stopPollingLocation();
                 //Image takenPicture = new Image(-1);
                 //takenPicture.setImage(image);
-                Intent intent = new Intent(this, Single_image.class);
+                Intent intent = new Intent(this, Captured_image.class);
                 intent.putExtra("imageLocation", imageLocation);
                 intent.putExtra("coordinates", coordinates);
                 startActivity(intent);
@@ -175,22 +184,33 @@ public class Home_feed extends ActionBarActivity
          * The fragment argument representing the section number for this
          * fragment.
          */
+        private static final String ARG_SECTION = "section";
         private static final String ARG_PREDEFINED_SECTION = "predefined section";
         private static final String ARG_KEYWORD = "keyword";
+        private static int mSection;
         private static boolean mPredefined;
         private static String mKeyword;
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(boolean predefined, String keyword) {
+//       public static PlaceholderFragment newInstance(boolean predefined, String keyword) {
+//            PlaceholderFragment fragment = new PlaceholderFragment();
+//            Bundle args = new Bundle();
+//            args.putBoolean(ARG_PREDEFINED_SECTION, predefined);
+//            args.putCharSequence(ARG_KEYWORD, keyword);
+//            fragment.setArguments(args);
+//            mPredefined = predefined;
+//            mKeyword = keyword;
+//            return fragment;
+//        }
+
+        public static PlaceholderFragment newInstance(int position) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
-            args.putBoolean(ARG_PREDEFINED_SECTION, predefined);
-            args.putCharSequence(ARG_KEYWORD, keyword);
+            args.putInt(ARG_SECTION, position);
             fragment.setArguments(args);
-            mPredefined = predefined;
-            mKeyword = keyword;
+            mSection = position;
             return fragment;
         }
 
@@ -203,13 +223,14 @@ public class Home_feed extends ActionBarActivity
             View rootView = inflater.inflate(R.layout.picture_grid_main, container, false);
 
             GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
-            final ImageAdapter imageAdapter = new ImageAdapter(getActivity(), mPredefined, mKeyword);
+            final ImageAdapter imageAdapter = new ImageAdapter(getActivity(), getArguments().getInt(ARG_SECTION), true);
             gridview.setAdapter(imageAdapter);
 
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                     Intent intent = new Intent(getActivity(), Single_image.class);
-                    intent.putExtra("image", imageAdapter.getImageId(position));
+                    Uri imageLocation = imageAdapter.getImageUri(position);
+                    intent.putExtra("imageLocation", imageLocation);
                     startActivity(intent);
                 }
             });
