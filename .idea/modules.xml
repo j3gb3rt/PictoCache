@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ImagePail/ImagePail.iml" filepath="$PROJECT_DIR$/ImagePail/ImagePail.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ImagePailProject.iml" filepath="$PROJECT_DIR$/ImagePailProject.iml" />
       <module fileurl="file://$PROJECT_DIR$/PictoCache.iml" filepath="$PROJECT_DIR$/PictoCache.iml" />
     </modules>
   </component>
