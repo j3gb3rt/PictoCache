@@ -147,6 +147,7 @@ public class Single_image extends ActionBarActivity {
         public PlaceholderFragment() {
         }
 
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
@@ -154,7 +155,7 @@ public class Single_image extends ActionBarActivity {
             ImageView imageView = (ImageView) rootView.findViewById(R.id.imageView);
             Uri imageLocation = (Uri) getArguments().getParcelable("imageLocation");
             Bitmap image = BitmapFactory.decodeFile(imageLocation.getPath());
-            int width = (int) getResources().getDimension(R.dimen.single_image_width);
+            imageView.setMaxWidth((int) getResources().getDimension(R.dimen.single_image_width));
             imageView.setImageBitmap(image);
             return rootView;
         }
