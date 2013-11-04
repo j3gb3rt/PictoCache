@@ -9,6 +9,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -111,6 +112,21 @@ public class RestApi {
 
     // http://stackoverflow.com/questions/2793150/how-to-use-java-net-urlconnection-to-fire-and-handle-http-requests
     public static JSONObject postImage(String url, Image image) throws IOException {
+        File f = new File(image.getImage().getPath());
+
+        int maxSize = 1000000;
+        if (f.length() > maxSize) {
+            double scale = Math.ceil(f.length() / maxSize);
+            // Scale the image down
+            Bitmap bmp = BitmapFactory.decodeFile(image.getImage().getPath());
+
+            int newWidth = (int) (bmp.getWidth() / scale);
+            int newHeight = (int) (bmp.getHeight() / scale);
+            Bitmap scaledBmp =
+                    Bitmap.createScaledBitmap(bmp, newWidth, newHeight, false);
+            scaledBmp.compress(Bitmap.CompressFormat.PNG, 50, new FileOutputStream(f));
+        }
+
         String boundary = Long.toHexString(System.currentTimeMillis());
         String CRLF = "\r\n"; // Line separator required by multipart/form-data.
 
@@ -149,7 +165,6 @@ public class RestApi {
             writer.append("Content-Transfer-Encoding: binary").append(CRLF);
             writer.append(CRLF).flush();
 
-            File f = new File(image.getImage().getPath());
             BufferedInputStream input = new BufferedInputStream(new FileInputStream(f));
             BufferedOutputStream output = new BufferedOutputStream(outputStream);
             try {
