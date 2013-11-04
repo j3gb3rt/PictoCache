@@ -136,7 +136,7 @@ public class RestApiInterface {
 
     public int saveKeyword(final String kw, final int imgId) throws IOException {
         Map<String, String> params = new HashMap<String, String>();
-        params.put("kw", kw);
+        params.put("k", kw);
         params.put("imgId", String.valueOf(imgId));
 
         JSONObject json = RestApi.post(BASE_KW_URL + "/", params);
