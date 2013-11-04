@@ -141,29 +141,23 @@ public class RestApi {
             writer.append(CRLF);
             writer.append(String.valueOf(image.getLongitude())).append(CRLF).flush();
 
-            /*
             // Send image
             writer.append("--" + boundary).append(CRLF);
-            writer.append(
-                    "Content-Disposition: form-data; name=\"img\"; filename=\"img\"").append(CRLF);
+            writer.append("Content-Disposition: form-data; name=\"img\"; filename=\"img.png\"").append(CRLF);
             writer.append("Content-Type: image/png").append(CRLF);
-            writer.append("Content-Transfer-Encoding: binary").append(CRLF);
             writer.append(CRLF).flush();
 
-            Uri pic = image.getImage();
-            InputStream picInput = new FileInputStream(new File(pic.getPath()));
+            InputStream input = new FileInputStream(new File(image.getImage().getPath()));
             try {
                 byte[] buffer = new byte[1024];
-                for (int length = 0; (length = picInput.read(buffer)) > 0;) {
+                for (int length = 0; (length = input.read(buffer)) > 0;) {
                     outputStream.write(buffer, 0, length);
                 }
-                outputStream.flush(); // Important! Output cannot be closed. Close of
-                // writer will close output as well.
+                outputStream.flush();
             } finally {
-                try { picInput.close(); } catch (IOException logOrIgnore) {}
+                try { input.close(); } catch (IOException e) {}
             }
             writer.append(CRLF).flush();
-            */
 
             writer.append("--" + boundary + "--").append(CRLF);
         } finally {
