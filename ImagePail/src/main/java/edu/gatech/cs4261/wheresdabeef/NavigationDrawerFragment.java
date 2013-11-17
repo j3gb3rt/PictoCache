@@ -101,6 +101,12 @@ public class NavigationDrawerFragment extends Fragment {
         selectItem(mCurrentSelectedPosition);
 
         // Indicate that this fragment would like to influence the set of actions in the action bar.
+
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
     }
 

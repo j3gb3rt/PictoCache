@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -13,13 +14,15 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
+import edu.gatech.cs4261.wheresdabeef.domain.Image;
+
 /**
  * Created by Jonathan on 10/10/13.
  */
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
     private ArrayList<Integer> images;
-    private static ArrayList<Uri> mImageLocations;
+    private static ArrayList<Image> mImages;
     public ImageAdapter(Context c, int i, boolean grid) {
         mContext = c;
         images = new ArrayList<Integer>();
@@ -92,12 +95,13 @@ public class ImageAdapter extends BaseAdapter {
         //}
     }
 
-    public ImageAdapter(Context c,ArrayList<Uri> imageLocations) {
+    public ImageAdapter(Context c) {
         mContext = c;
-        mImageLocations = new ArrayList<Uri>();
-        if (imageLocations != null) {
-            mImageLocations = imageLocations;
-        }
+        mImages = new ArrayList<Image>();
+    }
+
+    public void addImage (Image image) {
+        mImages.add(image);
     }
 
     public int getCount() {
@@ -105,7 +109,7 @@ public class ImageAdapter extends BaseAdapter {
     }
 
     public Uri getImageUri(int position) {
-        return mImageLocations.get(position);
+        return mImages.get(position).getImage();
     }
 
 
@@ -120,6 +124,14 @@ public class ImageAdapter extends BaseAdapter {
     public long getItemId(int position) {
         return 0;
     }
+
+    public void setImageUri(int position, Uri imageLocation) {
+        Image temp = mImages.get(position);
+        temp.setImage(imageLocation);
+        mImages.set(position, temp);
+
+    }
+
     public static int calculateInSampleSize(BitmapFactory.Options options,
                                             int reqWidth, int reqHeight) {
         // Raw height and width of image
@@ -188,14 +200,16 @@ public class ImageAdapter extends BaseAdapter {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         SquareImageView imageView;
         if (convertView == null) { // if it's not recycled, initialize some attributes
-            imageView = new SquareImageView(mContext);
-            //imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(4, 4, 4, 4);
-        } else {
-            imageView = (SquareImageView) convertView;
+                imageView = new SquareImageView(mContext);
+                //imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setPadding(4, 4, 4, 4);
+        }
+        else {
+                imageView = (SquareImageView) convertView;
         }
         if (position < images.size())
         {

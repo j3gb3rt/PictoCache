@@ -22,7 +22,9 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import java.io.File;
+import java.util.ArrayList;
 
+import edu.gatech.cs4261.wheresdabeef.domain.Image;
 import edu.gatech.cs4261.wheresdabeef.location.LocationApi;
 
 
@@ -39,12 +41,16 @@ public class Home_feed extends ActionBarActivity
      */
     private CharSequence mTitle;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private static ImageAdapter imageAdapter;
+
+    public static ImageAdapter getImageAdapter() {
+        return imageAdapter;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.feed_main);
-
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -53,6 +59,7 @@ public class Home_feed extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
     }
 
 //    @Override
@@ -190,6 +197,7 @@ public class Home_feed extends ActionBarActivity
         private static int mSection;
         private static boolean mPredefined;
         private static String mKeyword;
+        private static ImageAdapter mImageAdapter;
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -223,14 +231,14 @@ public class Home_feed extends ActionBarActivity
             View rootView = inflater.inflate(R.layout.picture_grid_main, container, false);
 
             GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
-            final ImageAdapter imageAdapter = new ImageAdapter(getActivity(), getArguments().getInt(ARG_SECTION), true);
+            imageAdapter = new ImageAdapter(getActivity(), getArguments().getInt(ARG_SECTION), true);
             gridview.setAdapter(imageAdapter);
-
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                     Intent intent = new Intent(getActivity(), Single_image.class);
-                    Uri imageLocation = imageAdapter.getImageUri(position);
-                    intent.putExtra("imageLocation", imageLocation);
+//                    Uri imageLocation = imageAdapter.getImageUri(positionintent.putExtra());
+//                    intent.putExtra("imageLocation", imageLocation);
+                    intent.putExtra("image", imageAdapter.getImageId(position));
                     startActivity(intent);
                 }
             });
@@ -243,6 +251,16 @@ public class Home_feed extends ActionBarActivity
             ((Home_feed) activity).onSectionAttached(
                     getArguments().getString(ARG_KEYWORD));
         }
+
+        public void populateGridView(ArrayList<Image> images) {
+            for (int i = 0; i < images.size(); i++) {
+                mImageAdapter.addImage(images.get(i));
+            }
+            new DownloadImageTask().execute(images);
+        }
+
     }
+
+
 
 }
