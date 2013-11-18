@@ -46,6 +46,11 @@ public class NavigationDrawerFragment extends Fragment {
      */
     private static final String PREF_USER_LEARNED_DRAWER = "navigation_drawer_learned";
 
+
+    public static final String PREDEFINED_SECTION_NEARBY = "Nearby";
+    public static final String PREDEFINED_SECTION_POPULAR = "Popular";
+    public static final String PREDEFINED_SECTION_NEW = "New";
+
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
@@ -84,9 +89,9 @@ public class NavigationDrawerFragment extends Fragment {
 
         adapter = new SectionedListAdapter();
         adapter.addSeparatorItem("Featured");
-        adapter.addItem("Nearby");
-        adapter.addItem("New");
-        adapter.addItem("Popular");
+        adapter.addItem(PREDEFINED_SECTION_NEARBY);
+        adapter.addItem(PREDEFINED_SECTION_POPULAR);
+        adapter.addItem(PREDEFINED_SECTION_NEW);
         adapter.addSectionSpace();
         adapter.addSeparatorItem("Subscribed Tags");
         ArrayList<String> localSubcriptions = LocalStorageManager.loadSubscriptions(getActivity());

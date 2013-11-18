@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 
 import edu.gatech.cs4261.wheresdabeef.domain.Image;
-import edu.gatech.cs4261.wheresdabeef.domain.Keyword;
 
 /**
  * Created by Kyle.
@@ -40,7 +39,7 @@ public class RestApiInterface {
     public static final String BASE_KW_URL =
             "http://dev.m.gatech.edu/d/gtg310x/api/imagepail/keyword";
 
-    public Uri getImageData(final int id) throws IOException {
+    public static Uri getImageData(final int id) throws IOException {
         String url = BASE_IMG_URL + "/" + id;
 
         byte[] image = RestApi.getImage(url, "image");
@@ -52,7 +51,7 @@ public class RestApiInterface {
         return Uri.fromFile(f);
     }
 
-    public Image getImage(final int id) throws IOException {
+    public static Image getImage(final int id) throws IOException {
         String url = BASE_IMG_URL + "/" + id;
         JSONArray jsonArr = RestApi.get(url, new HashMap<String, String>());
 
@@ -75,7 +74,9 @@ public class RestApiInterface {
      *
      * @param sortDir The initial sort direction of the images
      * @param sortCol The initial column to sort
-     * @param limit The max number of records to return
+     * @param limit The max number of records to return        data.setImage(mImage.getImage());
+        data.setThumb(mImage.getThumbnail());
+
      * @param keyword A keyword to search on. Exclusive with Lat&Lon
      * @param minLat A minimum latitude to search on, must include the other 3
      * @param maxLat A maximum latitude to search on, must include the other 3
@@ -83,7 +84,7 @@ public class RestApiInterface {
      * @param maxLon A maximum longitude to search on, must include the other 3
      * @return An ArrayList of Image objects, potentially empty.
      */
-    public List<Image> getImages(final String sortDir,
+    public static List<Image> getImages(final String sortDir,
                                  final String sortCol,
                                  final Integer limit,
                                  final String keyword,
@@ -121,7 +122,7 @@ public class RestApiInterface {
         return images;
     }
 
-    public int saveImage(final Image i) throws IOException {
+    public static int saveImage(final Image i) throws IOException {
         JSONObject json = RestApi.postImage(BASE_IMG_URL + "/", i);
 
         int id;
@@ -134,7 +135,7 @@ public class RestApiInterface {
         return id;
     }
 
-    public int saveKeyword(final String kw, final int imgId) throws IOException {
+    public static int saveKeyword(final String kw, final int imgId) throws IOException {
         Map<String, String> params = new HashMap<String, String>();
         params.put("k", kw);
         params.put("imgId", String.valueOf(imgId));
@@ -151,7 +152,7 @@ public class RestApiInterface {
         return id;
     }
 
-    public Map<String, Integer> getPopularKeywords(final Integer limit) throws IOException {
+    public static Map<String, Integer> getPopularKeywords(final Integer limit) throws IOException {
         Map<String, String> params = new HashMap<String, String>();
         params.put("l", String.valueOf(limit));
 

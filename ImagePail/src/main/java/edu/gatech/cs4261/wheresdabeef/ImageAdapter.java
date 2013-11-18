@@ -12,83 +12,101 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import org.apache.http.message.BasicNameValuePair;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.gatech.cs4261.wheresdabeef.domain.Image;
+import edu.gatech.cs4261.wheresdabeef.rest.RestApiInterface;
+import edu.gatech.cs4261.wheresdabeef.rest.RestApiV3;
+import edu.gatech.cs4261.wheresdabeef.rest.RestData;
 
 /**
  * Created by Jonathan on 10/10/13.
  */
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
-    private ArrayList<Integer> images;
     private static ArrayList<Image> mImages;
-    public ImageAdapter(Context c, int i, boolean grid) {
+    public ImageAdapter(Context c, String keyword, boolean predefined) {
         mContext = c;
-        images = new ArrayList<Integer>();
-        if (grid) {
-            switch (i)
-            {
-                case 1:
-                    images.add(0);
-                    images.add(1);
-                    images.add(2);
-                    images.add(3);
-                    images.add(4);
-                    images.add(5);
-                    images.add(7);
-                    images.add(8);
-                    images.add(9);
-                    images.add(10);
-                    break;
-                case 2:
-                    images.add(6);
-                    images.add(7);
-                    images.add(8);
-                    images.add(9);
-                    images.add(10);
-                    images.add(11);
-                    break;
-                case 3:
-                    images.add(1);
-                    images.add(3);
-                    images.add(5);
-                    images.add(7);
-                    images.add(9);
-                    images.add(11);
-                    break;
-                case 4:
-                    images.add(0);
-                    images.add(2);
-                    images.add(4);
-                    images.add(6);
-                    images.add(8);
-                    images.add(10);
-                    break;
-                case 5:
-                    images.add(6);
-                    images.add(0);
-                    images.add(7);
-                    images.add(1);
-                    images.add(8);
-                    images.add(2);
-                    break;
-                case 6:
-                    images.add(3);
-                    images.add(9);
-                    images.add(4);
-                    images.add(10);
-                    images.add(5);
-                    images.add(11);
-                    break;
-                default:
-                    images.add(1);
+        if (predefined) {
+            if (keyword.equals(NavigationDrawerFragment.PREDEFINED_SECTION_NEW)) {
+                RestApiV3 task = new RestApiV3(mContext);
+                RestData data = new RestData();
+                data.setAction(RestData.RestAction.GET_IMAGES);
+                data.addParam(new BasicNameValuePair("sd", RestApiInterface.SORT_DESC));
+                data.addParam(new BasicNameValuePair("sc", RestApiInterface.SORT_IMG_ID));
+                data.addParam(new BasicNameValuePair("l", String.valueOf(20)));
+                task.execute(data);
             }
+
+
         }
-        else{
-            if (i < 12)
-                images.add(i);
-        }
+//        images = new ArrayList<Integer>();
+//        if (grid) {
+//            switch (i)
+//            {
+//                case 1:
+//                    images.add(0);
+//                    images.add(1);
+//                    images.add(2);
+//                    images.add(3);
+//                    images.add(4);
+//                    images.add(5);
+//                    images.add(7);
+//                    images.add(8);
+//                    images.add(9);
+//                    images.add(10);
+//                    break;
+//                case 2:
+//                    images.add(6);
+//                    images.add(7);
+//                    images.add(8);
+//                    images.add(9);
+//                    images.add(10);
+//                    images.add(11);
+//                    break;
+//                case 3:
+//                    images.add(1);
+//                    images.add(3);
+//                    images.add(5);
+//                    images.add(7);
+//                    images.add(9);
+//                    images.add(11);
+//                    break;
+//                case 4:
+//                    images.add(0);
+//                    images.add(2);
+//                    images.add(4);
+//                    images.add(6);
+//                    images.add(8);
+//                    images.add(10);
+//                    break;
+//                case 5:
+//                    images.add(6);
+//                    images.add(0);
+//                    images.add(7);
+//                    images.add(1);
+//                    images.add(8);
+//                    images.add(2);
+//                    break;
+//                case 6:
+//                    images.add(3);
+//                    images.add(9);
+//                    images.add(4);
+//                    images.add(10);
+//                    images.add(5);
+//                    images.add(11);
+//                    break;
+//                default:
+//                    images.add(1);
+//            }
+//        }
+//        else{
+//            if (i < 12)
+//                images.add(i);
+//        }
         //for(int i = 0; i < rand; i++)
         //{
         // dog[i] = mThumbIds[(int) (8 * Math.random())];
@@ -100,12 +118,22 @@ public class ImageAdapter extends BaseAdapter {
         mImages = new ArrayList<Image>();
     }
 
+    public void setImages (List<Image> images){
+        mImages = (ArrayList)images;
+    }
+
+    public void setImage (int position,Uri imageLocation) {
+        Image workingImage = mImages.get(position);
+        workingImage.setImage(imageLocation);
+        mImages.set(position, workingImage);
+    }
+
     public void addImage (Image image) {
         mImages.add(image);
     }
 
     public int getCount() {
-        return images.size();
+        return mImages.size();
     }
 
     public Uri getImageUri(int position) {
@@ -114,7 +142,8 @@ public class ImageAdapter extends BaseAdapter {
 
 
     public int getImageId(int position) {
-        return mThumbIds[images.get(position)];
+//        return mThumbIds[images.get(position)];
+        return mImages.get(position).getId();
     }
 
     public Object getItem(int position) {
@@ -201,6 +230,7 @@ public class ImageAdapter extends BaseAdapter {
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         SquareImageView imageView;
         if (convertView == null) { // if it's not recycled, initialize some attributes
                 imageView = new SquareImageView(mContext);
@@ -211,22 +241,21 @@ public class ImageAdapter extends BaseAdapter {
         else {
                 imageView = (SquareImageView) convertView;
         }
-        if (position < images.size())
-        {
-            imageView.setImageBitmap(decodeSampledBitmapFromResource(mContext.getResources(),mThumbIds[images.get(position)], 100, 100));
-        }
+        if(mImages.get(position).getImage() != null)
+            imageView.setImageBitmap(decodeSampledBitmap(mImages.get(position).getImage(), 100, 100));
+            //imageView.setImageBitmap(decodeSampledBitmapFromResource(mContext.getResources(),mThumbIds[images.get(position)], 100, 100));
         return imageView;
     }
 
     // references to our images
-    private Integer[] mThumbIds = {
-            R.drawable.i1, R.drawable.i2,
-            R.drawable.i3, R.drawable.i4,
-            R.drawable.i5, R.drawable.i6,
-            R.drawable.i7, R.drawable.i8,
-            R.drawable.i9, R.drawable.i10,
-            R.drawable.i11, R.drawable.i12
-    };
+//    private Integer[] mThumbIds = {
+//            R.drawable.i1, R.drawable.i2,
+//            R.drawable.i3, R.drawable.i4,
+//            R.drawable.i5, R.drawable.i6,
+//            R.drawable.i7, R.drawable.i8,
+//            R.drawable.i9, R.drawable.i10,
+//            R.drawable.i11, R.drawable.i12
+//    };
 
     private class SquareImageView extends ImageView {
         public SquareImageView(Context context) {

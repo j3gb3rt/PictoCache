@@ -231,7 +231,7 @@ public class Home_feed extends ActionBarActivity
             View rootView = inflater.inflate(R.layout.picture_grid_main, container, false);
 
             GridView gridview = (GridView) rootView.findViewById(R.id.gridview);
-            imageAdapter = new ImageAdapter(getActivity(), getArguments().getInt(ARG_SECTION), true);
+            imageAdapter = new ImageAdapter(getActivity(), NavigationDrawerFragment.PREDEFINED_SECTION_NEW, true);
             gridview.setAdapter(imageAdapter);
             gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> parent, View v, int position, long id) {

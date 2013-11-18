@@ -7,8 +7,6 @@ import org.apache.http.NameValuePair;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.gatech.cs4261.wheresdabeef.domain.Image;
-
 /**
  * Created by HolocronCoder on 11/4/13.
  */

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.gatech.cs4261.wheresdabeef.Home_feed;
 import edu.gatech.cs4261.wheresdabeef.domain.Image;
 
 /**
@@ -43,16 +44,15 @@ public class RestApiV3 extends AsyncTask<RestData, Void, Boolean> {
         }
 
         try {
-            RestApiInterface rai = new RestApiInterface();
             int id;
             switch (action) {
                 case GET_IMAGE:
                     id = Integer.valueOf(paramsMap.get("id")).intValue();
-                    this.image = rai.getImage(id);
+                    this.image = RestApiInterface.getImage(id);
                     break;
                 case GET_IMAGE_DATA:
                     id = Integer.valueOf(paramsMap.get("id")).intValue();
-                    this.imageLoc = rai.getImageData(id);
+                    this.imageLoc = RestApiInterface.getImageData(id);
                     break;
                 case GET_IMAGES:
                     String sd = null, sc = null, k = null;
@@ -84,7 +84,7 @@ public class RestApiV3 extends AsyncTask<RestData, Void, Boolean> {
                         minLat = Double.valueOf(paramsMap.get("maxLon"));
                     }
 
-                    this.images = rai.getImages(sd, sc, l, k, minLat, maxLat, minLon, maxLon);
+                    this.images = RestApiInterface.getImages(sd, sc, l, k, minLat, maxLat, minLon, maxLon);
                     break;
                 case GET_POPULAR_KEYWORDS:
                     Integer limit = null;
@@ -93,7 +93,7 @@ public class RestApiV3 extends AsyncTask<RestData, Void, Boolean> {
                         limit = Integer.valueOf(paramsMap.get("l"));
                     }
 
-                    this.popularKeywords = rai.getPopularKeywords(limit);
+                    this.popularKeywords = RestApiInterface.getPopularKeywords(limit);
                     break;
                 case POST_IMAGE:
                     Image i = new Image(-1);
@@ -101,12 +101,12 @@ public class RestApiV3 extends AsyncTask<RestData, Void, Boolean> {
                     i.setLatitude(Double.valueOf(paramsMap.get("lat")));
                     i.setImage(data.getImage());
                     i.setThumbnail(data.getThumb());
-                    this.newImageId = rai.saveImage(i);
+                    this.newImageId = RestApiInterface.saveImage(i);
                     break;
                 case POST_KEYWORD:
                     String kw = paramsMap.get("kw");
                     int imgId = Integer.valueOf(paramsMap.get("imgId")).intValue();
-                    this.newKeywordId = rai.saveKeyword(kw, imgId);
+                    this.newKeywordId = RestApiInterface.saveKeyword(kw, imgId);
                     break;
             }
         } catch (final IOException e) {
@@ -127,6 +127,13 @@ public class RestApiV3 extends AsyncTask<RestData, Void, Boolean> {
                     Toast.makeText(context, "Upload Failed!", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case GET_IMAGES:
+                if (aBool) {
+                    Home_feed.getImageAdapter().setImages(images);
+                }
+                else {
+                    Toast.makeText(context, "Failed to get list of images", Toast.LENGTH_SHORT).show();
+                }
         }
     }
 }
